@@ -1,6 +1,7 @@
 from tokenapi import token_API
 import discord
 from discord.ext import commands
+from discord import FFmpegPCMAudio
 import requests
 import json
 
@@ -9,16 +10,23 @@ intents.members = True
 
 client = commands.Bot(command_prefix="!", intents=intents)
 
+######################## Dev Commands
+#what you'll see when the bot is turned on
 @client.event 
 async def on_ready():
     print("The bot is now ready for use")
     print("----------------------------")
 
+
+############################## Event Commands
+    
+#message when a user joins the server
 @client.event
 async def on_member_join(member):
     channel = client.get_channel(766291501432045582)
     await channel.send("he's here")
 
+#message when a user leaves the server
 @client.event
 async def on_member_remove(member):
     channel = client.get_channel(766291501432045582)
@@ -26,15 +34,24 @@ async def on_member_remove(member):
    
 
 
-
+######################################## Text Commands
 @client.command()   
 async def hello(ctx):
-    await ctx.send("HELLO MOTHERFUCKER")
+    await ctx.send("Hi...")
+    
+@client.command()   
+async def sus(ctx):
+    await ctx.send("That's omega sus bro")
+
 
 @client.command()   
 async def goodbye(ctx):
     await ctx.send("i go sleep")
 
+
+############################# Voice Chat Commands
+
+#command to make bot join a VC, with a sound effect
 @client.command(pass_context = True)
 async def join(ctx):
     if (ctx.voice_client):
@@ -42,10 +59,14 @@ async def join(ctx):
 
     if (ctx.author.voice):
         channel = ctx.message.author.voice.channel
-        await channel.connect()
+        voice = await channel.connect()
+        source = FFmpegPCMAudio('bruh-sound-effect.mp3')
+        player = voice.play(source)
+
     else:
         await ctx.send("User not in a voice channel.")
 
+#command to make bot leave VC
 @client.command(pass_context = True)
 async def leave(ctx):
     if (ctx.voice_client):
@@ -54,6 +75,19 @@ async def leave(ctx):
     else:
         await ctx.send("I'm not even in a voice channel.")
 
+#command to make bot enter a VC saying "bruh"... currently redundant.
+@client.command()   
+async def bruh(ctx):
+
+    if (ctx.author.voice):
+        if (ctx.voice_client):
+            await ctx.guild.voice_client.disconnect()
+        channel = ctx.message.author.voice.channel
+        voice = await channel.connect()
+        source = FFmpegPCMAudio('bruh-sound-effect.mp3')
+        player = voice.play(source)
+    else:
+        await ctx.send("User not in a voice channel.")
 
 
 
@@ -66,7 +100,5 @@ async def leave(ctx):
 
 
 
-
-
-
+#Initializes the bot
 client.run(token_API)
