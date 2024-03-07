@@ -1,9 +1,10 @@
-from tokenapi import token_API
 import discord
-from discord.ext import commands
-from discord import FFmpegPCMAudio
 import requests
 import json
+from discord.ext import commands
+from discord import FFmpegPCMAudio
+from tokenapi import token_API
+
 
 intents = discord.Intents.all()
 intents.members = True
@@ -60,11 +61,49 @@ async def join(ctx):
     if (ctx.author.voice):
         channel = ctx.message.author.voice.channel
         voice = await channel.connect()
-        source = FFmpegPCMAudio('bruh-sound-effect.mp3')
+        source = FFmpegPCMAudio('bruh.mp3')
         player = voice.play(source)
 
     else:
         await ctx.send("User not in a voice channel.")
+
+# Pause the audio file
+@client.command(pass_context = True)
+async def pause(ctx):
+    voice = discord.utils.get(client.voice_clients,guild=ctx.guild)
+    if voice.is_playing():
+        voice.pause()
+    else:
+        await ctx.send("No audio playing.")
+
+#Resume the audio file
+@client.command(pass_context = True)
+async def resume(ctx):
+    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+    if voice.is_paused():
+        voice.resume()
+    else: 
+        await ctx.send("Audio is not paused.")
+
+# Pause the audio file
+@client.command(pass_context = True)
+async def stop(ctx):
+    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+    voice.stop()
+
+#play another file
+@client.command(pass_context = True)
+async def play(ctx, arg):
+    if (ctx.voice_client):
+        voice = ctx.guild.voice_client
+        source = FFmpegPCMAudio(arg + '.mp3')
+        player = voice.play(source)
+        
+    else:
+        await ctx.send("No audio playing.")
+
+
+
 
 #command to make bot leave VC
 @client.command(pass_context = True)
@@ -84,13 +123,10 @@ async def bruh(ctx):
             await ctx.guild.voice_client.disconnect()
         channel = ctx.message.author.voice.channel
         voice = await channel.connect()
-        source = FFmpegPCMAudio('bruh-sound-effect.mp3')
+        source = FFmpegPCMAudio('bruh.mp3')
         player = voice.play(source)
     else:
         await ctx.send("User not in a voice channel.")
-
-
-
 
 
 
