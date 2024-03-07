@@ -1,24 +1,27 @@
-from tokenapi import token_API
 import discord
-from discord.ext import commands
-from discord import FFmpegPCMAudio
 import requests
 import json
+
+from tokenapi import token_API
+from discord.ext import commands
+from discord import FFmpegPCMAudio
+
 
 intents = discord.Intents.all()
 intents.members = True
 
 client = commands.Bot(command_prefix="!", intents=intents)
 
-######################## Dev Commands
+#------------------- Dev Commands -------------------
 #what you'll see when the bot is turned on
+
 @client.event 
 async def on_ready():
     print("The bot is now ready for use")
     print("----------------------------")
 
 
-############################## Event Commands
+#------------------- Event Commands -------------------
     
 #message when a user joins the server
 @client.event
@@ -34,7 +37,8 @@ async def on_member_remove(member):
    
 
 
-######################################## Text Commands
+#------------------- Text Commands -------------------
+    
 @client.command()   
 async def hello(ctx):
     await ctx.send("Hi...")
@@ -49,7 +53,7 @@ async def goodbye(ctx):
     await ctx.send("i go sleep")
 
 
-############################# Voice Chat Commands
+##------------------- Voice Chat Commands -------------------
 
 #command to make bot join a VC, with a sound effect
 @client.command(pass_context = True)
@@ -90,15 +94,7 @@ async def bruh(ctx):
         await ctx.send("User not in a voice channel.")
 
 
-
-
-
-
-
-
-
-
-
+#------------------- Basic Commands -------------------
 
 #Initializes the bot
 client.run(token_API)
