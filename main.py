@@ -10,6 +10,19 @@ from discord import FFmpegPCMAudio
 intents = discord.Intents.all()
 intents.members = True
 
+queues = {}
+#         voice = ctx.guild.voice_client <--- gets the voice channel
+
+
+#function to check a queue
+def check_queue(ctx, id):
+    if queues[id] != []:
+        voice = ctx.guild.voice_client
+        source = queues[id].pop(0)
+        player = voice.play(source)
+
+
+
 client = commands.Bot(command_prefix="!", intents=intents)
 
 #------------------- Dev Commands -------------------
@@ -88,25 +101,39 @@ async def resume(ctx):
     else: 
         await ctx.send("Audio is not paused.")
 
-# Pause the audio file
+# Stop the audio file
 @client.command(pass_context = True)
 async def stop(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     voice.stop()
 
-#play another file
+#play audio file
 @client.command(pass_context = True)
 async def play(ctx, arg):
     if (ctx.voice_client):
         voice = ctx.guild.voice_client
-        source = FFmpegPCMAudio(arg + '.mp3')
-        player = voice.play(source)
+        audio = arg + '.mp3'
+        source = FFmpegPCMAudio(audio)
+        player = voice.play(source, after=lambda x=None: check_queue(ctx, ctx.message.guild.id))
         
     else:
-        await ctx.send("No audio playing.")
+        await ctx.send("I'm not in a voice channel")
 
+#queues audio files
+@client.command(pass_context = True)
+async def queue(ctx, arg):
+    voice = ctx.guild.voice_client 
+    audio = arg + '.mp3'
+    source = FFmpegPCMAudio(audio)    
 
+    guild_id = ctx.message.guild.id
 
+    if guild_id in queues:
+        queues[guild_id].append(source)
+    else:
+        queues[guild_id] = [source]
+
+    await ctx.send('Added to queue.')
 
 #command to make bot leave VC
 @client.command(pass_context = True)
