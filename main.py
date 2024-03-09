@@ -5,6 +5,8 @@ import json
 
 from tokenapi import token_API
 from discord.ext import commands
+from discord.ext.commands import has_permissions, MissingPermissions
+from discord import Member
 from discord import FFmpegPCMAudio
 
 
@@ -37,19 +39,19 @@ async def on_ready():
     print("----------------------------")
 
 
-#------------------- Event Commands -------------------
+#------------------- Events -------------------
     
 #message when a user joins the server
 @client.event
 async def on_member_join(member):
     channel = client.get_channel(766291501432045582)
-    await channel.send("he's here")
+    await channel.send(f"{member} is here")
 
 #message when a user leaves the server
 @client.event
-async def on_member_remove(member):
+async def on_member_remove(member): 
     channel = client.get_channel(766291501432045582)
-    await channel.send("he's gone")
+    await channel.send(f"{member} is gone")
    
 #detects chat messages
 @client.event
@@ -62,13 +64,19 @@ async def on_message(message):
 
             await message.channel.send("Watch'yo mouth >:(")
 
-    if "hi" in message.content.lower():
-        await message.channel.send("darenimo, inai")
-    
+    if "hello" in message.content.lower():
+        await message.channel.send("daremo inai")
+    if "remember" in message.content.lower():
+        await message.channel.send("Oboete yo")
+    if "something" in message.content.lower():
+        await message.channel.send("nanimonai")
+    if "hate" in message.content.lower():
+        await message.channel.send("地ならし")
+    if "live" in message.content.lower():
+        await message.channel.send("苦労")
     
     else:
         await client.process_commands(message)
-
 
 
 
@@ -182,10 +190,30 @@ async def bruh(ctx):
     else:
         await ctx.send("User not in a voice channel.")
 
+#------------------- Mod commands -------------------
+# KICK people
+@client.command()
+@has_permissions(kick_members=True)
+async def kick(ctx, member: discord.Member, *, reason= None):
+    await member.kick(reason=reason)
+    await ctx.send(f'{member} has been exiled.')
 
+@kick.error
+async def kick_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You can't exile people.")
 
+# BAN people
+@client.command()
+@has_permissions(ban_members=True)
+async def ban(ctx, member: discord.Member, *, reason= None):
+    await member.ban(reason=reason)
+    await ctx.send(f'{member} has been executed.')
 
-
+@ban.error
+async def ban_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You can't kill people.")
 
 
 
