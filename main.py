@@ -1,3 +1,4 @@
+#TO DO -- fix queue not playing next audio
 import discord
 import requests
 import json
@@ -9,6 +10,8 @@ from discord import FFmpegPCMAudio
 
 intents = discord.Intents.all()
 intents.members = True
+client = commands.Bot(command_prefix="!", intents=intents)
+
 
 queues = {}
 #         voice = ctx.guild.voice_client <--- gets the voice channel
@@ -23,7 +26,7 @@ def check_queue(ctx, id):
 
 
 
-client = commands.Bot(command_prefix="!", intents=intents)
+
 
 #------------------- Dev Commands -------------------
 #what you'll see when the bot is turned on
@@ -48,6 +51,27 @@ async def on_member_remove(member):
     channel = client.get_channel(766291501432045582)
     await channel.send("he's gone")
    
+#detects chat messages
+@client.event
+async def on_message(message):
+    lis = ["****","***","****","****"]
+    #these stars are abusive language
+    for i in lis:
+        if message.content == i:
+            await message.delete()
+
+            await message.channel.send("Watch'yo mouth >:(")
+
+    if "hi" in message.content.lower():
+        await message.channel.send("darenimo, inai")
+    
+    
+    else:
+        await client.process_commands(message)
+
+
+
+
 
 
 #------------------- Text Commands -------------------
@@ -66,7 +90,7 @@ async def goodbye(ctx):
     await ctx.send("i go sleep")
 
 
-##------------------- Voice Chat Commands -------------------
+#------------------- Voice Chat Commands -------------------
 
 #command to make bot join a VC, with a sound effect
 @client.command(pass_context = True)
@@ -92,7 +116,7 @@ async def pause(ctx):
     else:
         await ctx.send("No audio playing.")
 
-#Resume the audio file
+# Resume the audio file
 @client.command(pass_context = True)
 async def resume(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
@@ -107,7 +131,7 @@ async def stop(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     voice.stop()
 
-#play audio file
+# play audio file
 @client.command(pass_context = True)
 async def play(ctx, arg):
     if (ctx.voice_client):
@@ -119,7 +143,7 @@ async def play(ctx, arg):
     else:
         await ctx.send("I'm not in a voice channel")
 
-#queues audio files
+# queues audio files
 @client.command(pass_context = True)
 async def queue(ctx, arg):
     voice = ctx.guild.voice_client 
@@ -135,7 +159,7 @@ async def queue(ctx, arg):
 
     await ctx.send('Added to queue.')
 
-#command to make bot leave VC
+# command to make bot leave VC
 @client.command(pass_context = True)
 async def leave(ctx):
     if (ctx.voice_client):
@@ -144,7 +168,7 @@ async def leave(ctx):
     else:
         await ctx.send("I'm not even in a voice channel.")
 
-#command to make bot enter a VC saying "bruh"... currently redundant.
+# command to make bot enter a VC saying "bruh"... currently redundant.
 @client.command()   
 async def bruh(ctx):
 
@@ -166,5 +190,5 @@ async def bruh(ctx):
 
 
 
-#Initializes the bot
+# Initializes the bot
 client.run(token_API)
