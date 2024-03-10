@@ -37,8 +37,13 @@ def check_queue(ctx, id):
 
 @client.event 
 async def on_ready():
+    #await client.change_presence(status=discord.Status.idle, activity=discord.Game('Currently being coded'))
+    #await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type= discord.ActivityType.listening, name = 'currently being coded'))
+    await client.change_presence(status=discord.Status.idle, activity=discord.Streaming(name='Currently being coded', url="https://www.twitch.tv/fukurouvi"))
     print("The bot is now ready for use")
     print("----------------------------")
+
+
 
 
 #------------------- Events -------------------
