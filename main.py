@@ -1,6 +1,7 @@
 #TO DO -- fix queue not playing next audio
 #--People with space in their names can't be banned
 #--Bot detects it's own messages and reacts to it
+#-- Errors section currently very broken and fragile
 import discord
 import requests
 import json
@@ -32,19 +33,30 @@ def check_queue(ctx, id):
 
 
 
-#------------------- Dev Commands -------------------
+#------------------- Dev -------------------
 #what you'll see when the bot is turned on
 
 @client.event 
 async def on_ready():
     #await client.change_presence(status=discord.Status.idle, activity=discord.Game('Currently being coded'))
     #await client.change_presence(status=discord.Status.idle, activity=discord.Activity(type= discord.ActivityType.listening, name = 'currently being coded'))
-    await client.change_presence(status=discord.Status.idle, activity=discord.Streaming(name='Currently being coded', url="https://www.twitch.tv/fukurouvi"))
+    await client.change_presence(status=discord.Status.online, activity=discord.Streaming(name='Currently being coded', url="https://www.twitch.tv/fukurouvi"))
     print("The bot is now ready for use")
     print("----------------------------")
 
 
+#------------------- Errors -------------------
 
+""" @client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You don't have permission to run this command.")
+    else:
+        await ctx.send("Command does not exist.") """
+        
+
+
+ 
 
 #------------------- Events -------------------
     
@@ -104,6 +116,23 @@ async def sus(ctx):
 async def goodbye(ctx):
     await ctx.send("i go sleep")
 
+#DMs the author of the message
+@client.command()
+async def icecream(ctx, user:discord.Member, *, message=None):
+    message = "BIN CHILLING? BIIN CHILLING."
+    embed = discord.Embed(title=message)    
+    await user.send(embed=embed)
+
+#    user = await client.fetch_user(ctx.author.id) <---- gets an user's ID, API sided.
+@client.command()
+async def pizza(ctx, *, message=None):
+    messagee = "WELCOME TO KAIKY'S PIZZERIA!"
+    user = await client.fetch_user(ctx.author.id)
+    embed = discord.Embed(title=messagee)    
+    await user.send(embed=embed)
+
+    
+
 #------------------- Embeds Commands -------------------
 @client.command()
 async def founding(ctx):
@@ -119,7 +148,7 @@ async def Fukurou(ctx):
     embed.set_thumbnail(url="https://i.ibb.co/PZ7hWTP/1-4-1-1.png")
     embed.add_field(name="フクロウ", value="Katakana", inline=True)
     embed.add_field(name="ふくろう", value="Hiragana", inline=True)
-    embed.set_footer(text=f"おれが見せてやる")
+    embed.set_footer(text=f"おれが手前を見せてやる")
     #ctx.author.display_name WILL ADD the name of the message's author.
     await ctx.send(embed=embed)
 
