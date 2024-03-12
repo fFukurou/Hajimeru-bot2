@@ -1,5 +1,5 @@
 #TO DO -- queue completely broke after cog
-#--People with space in their names can't be banned
+#--People with space in their names can't be banned, Roles with space in their names can't be selected
 #--Bot detects it's own messages and reacts to it     ---------- FIXED
 #-- Errors section currently very broken and fragile
 #-- FFMPEG not working in cogs       --------- FIXED
@@ -11,6 +11,7 @@ from discord import Member
 from discord import FFmpegPCMAudio
 
 import discord
+from discord.utils import get
 from discord.ext import commands
 import os
 import asyncio
